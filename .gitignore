@@ -1,0 +1,10 @@
+.ghostpid
+.ghost-cli
+.env
+
+apps/
+logs/
+versions/
+data/
+public/
+content/themes/casper
