@@ -1,0 +1,47 @@
+version: '3.1'
+services:
+
+  ghost:
+    image: ghost:5.53.4-alpine
+    restart: always
+    volumes:
+      - ./content:/var/lib/ghost/content
+    ports:
+      - 8080:2368
+    environment: # see https://ghost.org/docs/config/#configuration-options
+      NODE_ENV: development
+
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: example
+      database__connection__database: ghost
+
+      mail__transport: "${MAIL_TRANSPORT}"
+      mail__options__host: "${MAIL_HOST}"
+      mail__options__port: "${MAIL_PORT}"
+      mail__options__secureConnection: "${MAIL_SECURE_CONNECTION}"
+      mail__options__auth__user: "${MAIL_USER}"
+      mail__options__auth__pass: "${MAIL_PASSWORD}"
+
+      url: http://localhost:8080
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    links:
+      - db
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+        - 8083:3306
+    volumes:
+        - ./data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
